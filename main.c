@@ -1,6 +1,6 @@
 // Samuel DuBois and Michael Brauninger
 // ECE 231: Embedded Systems
-// Project 2 Test Program 6
+// Project 2 Final Test Program 8
 // 03.04.2020
 
 #include <asf.h>
@@ -58,15 +58,15 @@ ISR(PCINT2_vect) {
 // Description: returns the correct identity value of the number we want to display, given the value of the incrementer
 int calculateIdentityFor(int digit) {
 	
-	int ms; // miliseconds
+	int ds; // deciseconds
 	int os; // ones place of seconds
 	int ts; // tens place of seconds
 	int m;  // minutes
 	
 	switch (digit) {
 		case 0:
-			ms = inc % 10;
-			return identities[ms];
+			ds = inc % 10;
+			return identities[ds];
 		case 1:
 			os = inc / 10;
 			os = os % 10;
@@ -84,7 +84,7 @@ int calculateIdentityFor(int digit) {
 
 void checkForOverflow() {
 	if (inc >= 5999)
-		inc -= 5999;
+		inc -= 5999; // Maximum Value before overflow
 }
 
 // Description: Shifts through each 'index' of the clock display so that it creates the illusion that all of the lights on the screen are lit up at the same time
@@ -136,20 +136,20 @@ void shiftThroughDisplayIndices(uint32_t time) {
 
 int main (void)
 {
-	// MARK: Instantiate all the pins that we need in order to 
+	// MARK: Set the Button and interrupt flag to record input
 	
-	// Set the EIMSK
+	// Set the EIMSK to enable INT1
 	EIMSK = 0b00000010;
-	// Set the EICRA
+	// Set the EICRA to detect every falling edge of INT1 and schedule interrupt
 	EICRA = 0b00001000;
-	// set the PCMK2
+	// set the PCMK2 tells it to enable PCINT16
 	PCMSK2 = 0b00000001;
-	// Set the PCICR
+	// Set the PCICR to enable the internal flag of PCINT16
 	PCICR = 0b00000100;
-	// Configure Internal Resistor of PD3
+	// Configure Internal Resistor of PD3 and PD0
 	PORTD = 0b00001001;
 	
-	//
+	// MARK: Set the SPI outputs
 	
 	// Set the MOSI, SS, and SCK pin as outputs
 	DDRB = 0b00101100;
